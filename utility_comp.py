@@ -2,11 +2,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import sys
 
-"""
-This file computes voter preferences
-
-"""
-
 # Column spec for election data:
 # [0: unique voter id]
 # [1:vote, 1 obama 2 romney]
