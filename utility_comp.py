@@ -17,7 +17,7 @@ import sys
 
 # Unpack and parse the data from the files contianing the primary and
 # election data.
-primary_data = open('blah2.csv')
+primary_data = open('jan12_new.csv')
 election_data = open('sept12_new.csv')
 
 def build_voting_data(file):
@@ -84,8 +84,8 @@ for vote in primary_votes:
 	alpha_norm = [float(a)/float(sum(alpha)) for a in alpha]
 	#print alpha_norm
 	for j in xrange(len(vote[6:10])):
-		utility_i_1 += alpha_norm[j] * gamma_1[vote[6 + j] - 1]
-		utility_i_plurality += alpha_norm[j] * gamma_plurality[vote[6 + j] - 1]
+		utility_i_1 += alpha_norm[j] * np.where(gamma_1 == vote[6+j] - 1)[0][0] #gamma_1[vote[6 + j] - 1]
+		utility_i_plurality += alpha_norm[j] * np.where(gamma_plurality == vote[6+j] - 1)[0][0] #gamma_plurality[vote[6 + j] - 1]
 
 	total_utility_our_rule += utility_i_1
 	total_utility_plurality_rule += utility_i_plurality
@@ -108,7 +108,8 @@ for vote in election_votes:
 	alpha = vote[2:8]
 	alpha_norm = [float(a)/float(sum(alpha)) for a in alpha]
 	for j in xrange(len(vote[8:14])):
-		ge_scores[2 - vote[8 + j]] += alpha_norm[j]
+		if vote[8 + j] == 1 or vote[8 + j] == 2:
+			ge_scores[2 - vote[8 + j]] += alpha_norm[j]
 
 print "According to our voting rule:"
 cand_dict = {1:'Obama', 2:'Romney'}
@@ -137,8 +138,9 @@ for vote in election_votes:
 	alpha = map(float,vote[2:8])
 	alpha_norm = [a/float(sum(alpha)) for a in alpha]
 	for j in xrange(len(vote[8:14])):
-		ge_total_utility_our_rule += alpha_norm[j] * ge_gamma_1[2 - vote[8 + j]]
-		ge_total_utility_plurality_rule += alpha_norm[j] * ge_gamma_plurality[2 - vote[8 + j]]
+		if vote[8 + j] == 1 or vote[8 + j] == 2:
+			ge_total_utility_our_rule += alpha_norm[j] * ge_gamma_1[2 - vote[8 + j]] # np.where(ge_gamma_1 == 2 - vote[8 + j])[0][0] #
+			ge_total_utility_plurality_rule += alpha_norm[j] * ge_gamma_plurality[2 - vote[8 + j]]#np.where(ge_gamma_plurality == 2 - vote[8 + j])[0][0] #
 
 print "\nTotal utility under our rule:", ge_total_utility_our_rule
 print "Total utility under their rule:", ge_total_utility_plurality_rule
